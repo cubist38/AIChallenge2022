@@ -1,0 +1,9 @@
+*.pyc
+*.pth
+*.rar
+*.tar
+*.zip
+.vscode/
+*.mp4
+data/*
+!data/README.md
