@@ -45,12 +45,14 @@ def unique_objects(path = DATA_PATH,  des_path = DES_PATH):
                 data = json.load(f)
 
             distinct_objects = []
+            distinct_labels = []
             
             for i in range(len(data['detection_class_names'])):
                 if data['detection_class_entities'][i] not in distinct_objects:
                     distinct_objects.append(data['detection_class_entities'][i])
+                    distinct_labels.append(data['detection_class_labels'][i])
 
-            ls = {'unique_objects': distinct_objects}
+            ls = {'unique_objects': distinct_objects, 'class_labels': distinct_labels}
             
 
             des_fold_path = os.path.join(des_path, fold_name)
@@ -64,5 +66,5 @@ def unique_objects(path = DATA_PATH,  des_path = DES_PATH):
 
 
 if __name__ == '__main__':
-    refine_data(DATA_PATH, thresh_hold)
+    #refine_data(DATA_PATH, thresh_hold)
     unique_objects(DATA_PATH, DES_PATH)
