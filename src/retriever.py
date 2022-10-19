@@ -17,6 +17,8 @@ class Retriever:
         self.dataset = fo.Dataset.from_images_dir(
             img_dir, name=None, tags=None, recursive=True)
 
+        print(img_dir)
+
     def add_meta_data_images(self): # Add video, frameid
         for sample in self.dataset:
             _, sample['video'], sample['frameid'] = sample['filepath'][:-
@@ -125,13 +127,13 @@ class Retriever:
                                 512).T).cpu().numpy().item()
             sample['text_query_similarity'] = query_similarity
             
-            print(sample)
+            # print(sample)
 
 
             sample.save()
 
 
-        # self.dataset = self.dataset.sort_by("text_query_similarity", reverse=True)
+        self.dataset = self.dataset.sort_by("text_query_similarity", reverse=True)
 
 
     def export(self, top_k, export_dir):
