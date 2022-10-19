@@ -129,7 +129,7 @@ class Retriever:
 
             print(sample)
 
-        self.dataset = self.dataset.sort_by("text_query_similarity", reverse=True)
+        # self.dataset = self.dataset.sort_by("text_query_similarity", reverse=True)
 
 
     def export(self, top_k):
