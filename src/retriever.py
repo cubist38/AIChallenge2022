@@ -98,7 +98,9 @@ class Retriever:
             features = np.load(clip_path)
 
             feature_video_dir = os.path.join(features_dir, v)
-            os.makedirs(feature_video_dir)
+
+            if not os.path.isdir(feature_video_dir):
+                os.makedirs(feature_video_dir)
 
             for i, frameid in enumerate(all_keyframes[v]):
 
@@ -124,10 +126,16 @@ class Retriever:
             sample['text_query_similarity'] = query_similarity
             sample.save()
 
-        # dataset = dataset.sort_by("text_query_similarity", reverse=True)
+        self.dataset = self.dataset.sort_by("text_query_similarity", reverse=True)
 
-    def export(k):
-        pass
+
+    def export(self, top_k):
+
+        result = self.dataset[:top_k]
+
+        result.export(export_dir="data/export",
+                       dataset_type=fo.types.FiftyOneDataset)
+        
 
     
 
