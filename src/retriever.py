@@ -124,7 +124,10 @@ class Retriever:
             query_similarity = (text_features @ a.reshape(1,
                                 512).T).cpu().numpy().item()
             sample['text_query_similarity'] = query_similarity
+
             sample.save()
+
+            print(sample)
 
         self.dataset = self.dataset.sort_by("text_query_similarity", reverse=True)
 
