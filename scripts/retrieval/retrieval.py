@@ -33,7 +33,7 @@ def get_parser():
         "--top_k", default=100, help="top k highest score images")
 
     parser.add_argument(
-        "--export", default="data/export", help="directory for exporting top k images")
+        "--export_dir", default="data/export", help="directory for exporting top k images")
     
     return parser.parse_args()
 
@@ -63,7 +63,7 @@ def main(args):
 
     retriever.add_text_query_similarity(text_search_features)
 
-    retriever.export(args.top_k)
+    retriever.export(args.top_k, args.export_dir)
 
 
     # data = fo.Dataset.from_dir(

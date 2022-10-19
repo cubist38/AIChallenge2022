@@ -124,19 +124,21 @@ class Retriever:
             query_similarity = (text_features @ a.reshape(1,
                                 512).T).cpu().numpy().item()
             sample['text_query_similarity'] = query_similarity
+            
+            print(sample)
+
 
             sample.save()
 
-            print(sample)
 
         # self.dataset = self.dataset.sort_by("text_query_similarity", reverse=True)
 
 
-    def export(self, top_k):
+    def export(self, top_k, export_dir):
 
         result = self.dataset[:top_k]
 
-        result.export(export_dir="data/export",
+        result.export(export_dir=export_dir,
                        dataset_type=fo.types.FiftyOneDataset)
         
 
