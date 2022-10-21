@@ -27,14 +27,14 @@ def get_parser():
         "--feature_dir", default="data/demo/CLIPFeatures_C00_V00", help="vector features directory")
 
     parser.add_argument(
-        "--text_query", default="A doctor is speaking", help="text query")
+        "--text_query", default="An artist is painting a mask meticulously. Around him, there are many masks. The artist wears very simple honeycomb sandals. Then there is a close-up image of the masks. This type of mask is called the Mid-Autumn Festival paper mask.", help="text query")
 
     parser.add_argument(
         "--top_k", default=100, help="top k highest score images")
 
     parser.add_argument(
-        "--export_dir", default="data/export", help="directory for exporting top k images")
-    
+        "--export_dir", default="result/top_k_images", help="directory for exporting top k images")
+
     return parser.parse_args()
 
 
@@ -65,7 +65,6 @@ def main(args):
 
     retriever.export(args.top_k, args.export_dir)
 
-
     # data = fo.Dataset.from_dir(
     #     dataset_dir = 'data/export',
     #     dataset_type=fo.types.FiftyOneDataset
@@ -75,7 +74,3 @@ def main(args):
 if __name__ == "__main__":
     args = get_parser()
     main(args)
-
-
-
-
