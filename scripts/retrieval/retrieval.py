@@ -46,7 +46,7 @@ def main(args):
 
     retriever.add_meta_data_images()
 
-    retriever.add_object_detection(args.object_dir)
+    # retriever.add_object_detection(args.object_dir)
 
     retriever.extract_vector_features_per_frame(args.feature_dir)
 
