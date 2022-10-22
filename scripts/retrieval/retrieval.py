@@ -46,7 +46,7 @@ def main(args):
 
     retriever.add_meta_data_images()
 
-    # retriever.add_object_detection(args.object_dir)
+    retriever.add_object_detection(args.object_dir)
 
     retriever.extract_vector_features_per_frame(args.feature_dir)
 
@@ -65,10 +65,6 @@ def main(args):
 
     retriever.export(args.top_k, args.export_dir)
 
-    # data = fo.Dataset.from_dir(
-    #     dataset_dir = 'data/export',
-    #     dataset_type=fo.types.FiftyOneDataset
-    # )
 
 
 if __name__ == "__main__":
