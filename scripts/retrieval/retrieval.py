@@ -48,11 +48,11 @@ def main(args):
 
     # retriever.add_object_detection(args.object_dir)
 
-    # retriever.extract_vector_features_per_frame(args.feature_dir)
+    retriever.extract_vector_features_per_frame(args.feature_dir)
 
-    # retriever.add_clip_embedding()
+    retriever.add_clip_embedding()
 
-    retriever.load_clip_embedding()
+    # retriever.load_clip_embedding()
 
 
     # # model
