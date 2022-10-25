@@ -6,8 +6,8 @@
 .vscode/
 *.mp4
 data/*
-!data/README.md
-result
+!data/demo
+# result
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

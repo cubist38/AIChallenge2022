@@ -5,7 +5,7 @@ import json
 import numpy as np
 from glob import glob
 import os
-from frame_mapping import FrameMapping
+from src.frame_mapping import FrameMapping
 
 
 # Fix hard code in rsplit
@@ -24,9 +24,8 @@ class Retriever:
 
     def add_meta_data_images(self): # Add video, frameid
         for sample in self.dataset:
-            _, sample['video'], sample['framename'] = sample['filepath'].rsplit('/', 2)
-            # get frame id
-            sample['frameid'] = self.frame_id_mapping.get_frame_id(sample['framename'])
+            _, sample['video'], sample['framename'] = sample['filepath'].replace('\\', '/').rsplit('/', 2)
+            sample['frameid'] = self.frame_id_mapping.get_id(sample['video'], sample['framename'])
             sample.save()
 
     def add_object_detection(self, object_dir='data/demo/ObjectsC00_V00'):
@@ -69,7 +68,7 @@ class Retriever:
         # all_video = [v.rsplit('/', 1)[-1] for v in all_video]
 
         for kf in all_keyframe:
-            _, vid, kf = kf[:-4].rsplit('/', 2)
+            _, vid, kf = kf[:-4].replace('\\', '/').rsplit('/', 2)
             if vid not in video_keyframe_dict.keys():
                 video_keyframe_dict[vid] = [kf]
             else:
@@ -86,12 +85,11 @@ class Retriever:
         path_all_video = os.path.join(self.img_dir, '*')
         
         all_video = glob(path_all_video)
-        all_video = [v.rsplit('/', 1)[-1] for v in all_video]
+        all_video = [v.replace('\\', '/').rsplit('/', 1)[-1] for v in all_video]
 
         return all_video
 
     def extract_vector_features_per_frame(self, features_dir='/data/demo/CLIPFeatures_C00_V00'):
-
         self.features_dir = features_dir
 
         all_video = self.get_all_list_video()
@@ -126,8 +124,8 @@ class Retriever:
 
     def add_text_query_similarity(self, text_features):
 
-        text_features = text_features.to(dtype=torch.float16)
-        embedding = [torch.from_numpy(sample['clip_embedding'].T).to(dtype=torch.float16) for sample in self.dataset]
+        text_features = text_features.to(dtype=torch.float32)
+        embedding = [torch.from_numpy(sample['clip_embedding'].T).to(dtype=torch.float32) for sample in self.dataset]
         a = torch.stack(embedding, dim = 1)
 
         query_similarity = torch.matmul(text_features, a)
