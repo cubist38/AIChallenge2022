@@ -10,4 +10,9 @@ def get_frame_id_mapping(folder_path):
         df['video'] = file.split('/')[-1].split('.')[0]
         frame_id_mapping.append(df)
     frame_id_mapping = pandas.concat(frame_id_mapping)
-    return frame_id_mapping
+
+    frame_id_dict = {}
+    for index, row in frame_id_mapping.iterrows():
+        frame_id_dict[(row['video'], row['frame_name'])] = row['frame_id']
+
+    return frame_id_dict
