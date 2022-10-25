@@ -122,15 +122,25 @@ class Retriever:
 
     def add_text_query_similarity(self, text_features):
 
-        text_features = text_features.to(dtype=torch.float16)
-        embedding = [torch.from_numpy(sample['clip_embedding'].T).to(dtype=torch.float16) for sample in self.dataset]
-        a = torch.stack(embedding, dim = 1)
+        # text_features = text_features.to(dtype=torch.float16)
+        # embedding = [torch.from_numpy(sample['clip_embedding'].T).to(dtype=torch.float16) for sample in self.dataset]
+        # a = torch.stack(embedding, dim = 1)
 
-        query_similarity = torch.matmul(text_features, a)
+        # query_similarity = torch.matmul(text_features, a)
         
-        for idx, sample in enumerate(self.dataset):
-            sample['text_query_similarity'] = query_similarity[0, idx].item()
+        # for idx, sample in enumerate(self.dataset):
+        #     sample['text_query_similarity'] = query_similarity[0, idx].item()
+        #     sample.save()
+
+        for sample in self.dataset:
+            a = sample['clip_embedding']
+            query_similarity = (text_features @ a.reshape(1,
+                                512).T).cpu().numpy().item()
+            sample['text_query_similarity'] = query_similarity
             sample.save()
+
+        self.dataset = self.dataset.sort_by(
+            "text_query_similarity", reverse=True)
         
 
     def export(self, top_k, export_dir):
