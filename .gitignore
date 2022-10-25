@@ -6,7 +6,7 @@
 .vscode/
 *.mp4
 data/*
-!data/demo
+
 !data/frame_id
 # result
 

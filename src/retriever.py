@@ -17,14 +17,19 @@ class Retriever:
             img_dir, name=None, tags=None, recursive=True)
         print(img_dir)
 
-        self.frame_id_mapping = FrameMapping('data/frame_id')
-        print('complete loading frame id mapping')
+        # self.frame_id_mapping = FrameMapping('data/frame_id')
+        # print('complete loading frame id mapping')
 
 
     def add_meta_data_images(self): # Add video, frameid
-        for sample in tqdm(self.dataset):
-            _, sample['video'], sample['framename'] = sample['filepath'].replace('\\', '/').rsplit('/', 2)
-            sample['frameid'] = self.frame_id_mapping.get_id(sample['video'], sample['framename'])
+        # for sample in tqdm(self.dataset):
+        #     _, sample['video'], sample['framename'] = sample['filepath'].replace('\\', '/').rsplit('/', 2)
+        #     sample['frameid'] = self.frame_id_mapping.get_id(sample['video'], sample['framename'])
+        #     sample.save()
+
+        for sample in self.dataset:
+            _, sample['video'], sample['frameid'] = sample['filepath'][:-
+                                                                       4].rsplit('/', 2)
             sample.save()
 
     def add_object_detection(self, object_dir='data/demo/ObjectsC00_V00'):
@@ -115,11 +120,36 @@ class Retriever:
             object_path = os.path.join(
                 self.features_dir, sample['filepath'][-20:-4] + '.npy')
             
+            print(sample['filepath'][-20:-4] + '.npy')
+
             clip_embedding = np.load(object_path)
             sample['clip_embedding'] = clip_embedding
 
             sample.save()
 
+    # change data to lastest
+    def load_clip_embedding(self, features_dir='data/demo/CLIPFeatures_C00_V00'):
+        dict_clip_embedding = {}
+        all_video = self.get_all_list_video()
+        all_keyframes = self.get_all_list_keyframe()
+
+        for file_embedding in os.listdir(features_dir):
+            file_embedding_path = os.path.join(features_dir, file_embedding)
+            
+            name_video = file_embedding.split('.')[0]
+            dict_clip_embedding[name_video] = dict()
+
+            for i, frameid in enumerate(all_keyframes[name_video]):
+                features_np = np.load(file_embedding_path)[i]
+                dict_clip_embedding[name_video][frameid] = features_np
+
+
+        for sample in self.dataset:
+            clip_embedding = dict_clip_embedding[sample['video']]
+            sample['clip_embedding'] = clip_embedding[sample['frameid']]
+            sample.save()
+
+        
 
     def add_text_query_similarity(self, text_features):
 

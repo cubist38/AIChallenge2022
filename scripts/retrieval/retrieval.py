@@ -48,22 +48,25 @@ def main(args):
 
     # retriever.add_object_detection(args.object_dir)
 
-    retriever.extract_vector_features_per_frame(args.feature_dir)
+    # retriever.extract_vector_features_per_frame(args.feature_dir)
 
-    retriever.add_clip_embedding()
+    # retriever.add_clip_embedding()
 
-    # model
+    retriever.load_clip_embedding()
 
-    encoder = VIT()
 
-    # query
+    # # model
 
-    text_search = args.text_query
-    text_search_features = encoder.encode_text(text_search)
+    # encoder = VIT()
 
-    retriever.add_text_query_similarity(text_search_features)
+    # # query
 
-    retriever.export(args.top_k, args.export_dir)
+    # text_search = args.text_query
+    # text_search_features = encoder.encode_text(text_search)
+
+    # retriever.add_text_query_similarity(text_search_features)
+
+    # retriever.export(args.top_k, args.export_dir)
 
 
 
