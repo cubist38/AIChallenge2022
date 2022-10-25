@@ -5,7 +5,7 @@ import json
 import numpy as np
 from glob import glob
 import os
-
+from frame_mapping import FrameMapping
 
 
 # Fix hard code in rsplit
@@ -16,13 +16,17 @@ class Retriever:
         self.img_dir = img_dir
         self.dataset = fo.Dataset.from_images_dir(
             img_dir, name=None, tags=None, recursive=True)
-
         print(img_dir)
+
+        self.frame_id_mapping = FrameMapping('data/frame_id')
+        print('complete loading frame id mapping')
+
 
     def add_meta_data_images(self): # Add video, frameid
         for sample in self.dataset:
-            _, sample['video'], sample['frameid'] = sample['filepath'][:-
-                                                               4].rsplit('/', 2)
+            _, sample['video'], sample['framename'] = sample['filepath'].rsplit('/', 2)
+            # get frame id
+            sample['frameid'] = self.frame_id_mapping.get_frame_id(sample['framename'])
             sample.save()
 
     def add_object_detection(self, object_dir='data/demo/ObjectsC00_V00'):
