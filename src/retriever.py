@@ -22,7 +22,7 @@ class Retriever:
 
 
     def add_meta_data_images(self): # Add video, frameid
-        for sample in self.dataset:
+        for sample in tqdm(self.dataset):
             _, sample['video'], sample['framename'] = sample['filepath'].replace('\\', '/').rsplit('/', 2)
             sample['frameid'] = self.frame_id_mapping.get_id(sample['video'], sample['framename'])
             sample.save()
