@@ -38,7 +38,7 @@ def unique_objects(path = DATA_PATH,  des_path = DES_PATH):
 
     fold = glob.glob(path + '/*')
     for fold_path in fold:
-        fold_name = fold_path.split('/')[-1]
+        fold_name = fold_path.replace('\\', '/').split('/')[-1]
         file = glob.glob(fold_path + '/*.json')
         for file_path in file:
             with open(file_path, 'r') as f:
@@ -59,7 +59,7 @@ def unique_objects(path = DATA_PATH,  des_path = DES_PATH):
             if not os.path.exists(des_fold_path):
                 os.mkdir(des_fold_path)
 
-            file_name = file_path.split('/')[-1]
+            file_name = file_path.replace('\\', '/').split('/')[-1]
 
             with open(os.path.join(des_fold_path, file_name), 'w') as f:
                 json.dump(ls, f)

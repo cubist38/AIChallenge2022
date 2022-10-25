@@ -5,7 +5,7 @@ import json
 import numpy as np
 from glob import glob
 import os
-
+from src.frame_mapping import FrameMapping
 
 
 # Fix hard code in rsplit
@@ -16,13 +16,16 @@ class Retriever:
         self.img_dir = img_dir
         self.dataset = fo.Dataset.from_images_dir(
             img_dir, name=None, tags=None, recursive=True)
-
         print(img_dir)
+
+        self.frame_id_mapping = FrameMapping('data/frame_id')
+        print('complete loading frame id mapping')
+
 
     def add_meta_data_images(self): # Add video, frameid
         for sample in self.dataset:
-            _, sample['video'], sample['frameid'] = sample['filepath'][:-
-                                                               4].rsplit('/', 2)
+            _, sample['video'], sample['framename'] = sample['filepath'].replace('\\', '/').rsplit('/', 2)
+            sample['frameid'] = self.frame_id_mapping.get_id(sample['video'], sample['framename'])
             sample.save()
 
     def add_object_detection(self, object_dir='data/demo/ObjectsC00_V00'):
@@ -65,7 +68,7 @@ class Retriever:
         # all_video = [v.rsplit('/', 1)[-1] for v in all_video]
 
         for kf in all_keyframe:
-            _, vid, kf = kf[:-4].rsplit('/', 2)
+            _, vid, kf = kf[:-4].replace('\\', '/').rsplit('/', 2)
             if vid not in video_keyframe_dict.keys():
                 video_keyframe_dict[vid] = [kf]
             else:
@@ -82,12 +85,11 @@ class Retriever:
         path_all_video = os.path.join(self.img_dir, '*')
         
         all_video = glob(path_all_video)
-        all_video = [v.rsplit('/', 1)[-1] for v in all_video]
+        all_video = [v.replace('\\', '/').rsplit('/', 1)[-1] for v in all_video]
 
         return all_video
 
     def extract_vector_features_per_frame(self, features_dir='/data/demo/CLIPFeatures_C00_V00'):
-
         self.features_dir = features_dir
 
         all_video = self.get_all_list_video()
@@ -122,25 +124,15 @@ class Retriever:
 
     def add_text_query_similarity(self, text_features):
 
-        # text_features = text_features.to(dtype=torch.float16)
-        # embedding = [torch.from_numpy(sample['clip_embedding'].T).to(dtype=torch.float16) for sample in self.dataset]
-        # a = torch.stack(embedding, dim = 1)
+        text_features = text_features.to(dtype=torch.float32)
+        embedding = [torch.from_numpy(sample['clip_embedding'].T).to(dtype=torch.float32) for sample in self.dataset]
+        a = torch.stack(embedding, dim = 1)
 
-        # query_similarity = torch.matmul(text_features, a)
+        query_similarity = torch.matmul(text_features, a)
         
-        # for idx, sample in enumerate(self.dataset):
-        #     sample['text_query_similarity'] = query_similarity[0, idx].item()
-        #     sample.save()
-
-        for sample in self.dataset:
-            a = sample['clip_embedding']
-            query_similarity = (text_features @ a.reshape(1,
-                                512).T).cpu().numpy().item()
-            sample['text_query_similarity'] = query_similarity
+        for idx, sample in enumerate(self.dataset):
+            sample['text_query_similarity'] = query_similarity[0, idx].item()
             sample.save()
-
-        self.dataset = self.dataset.sort_by(
-            "text_query_similarity", reverse=True)
         
 
     def export(self, top_k, export_dir):
