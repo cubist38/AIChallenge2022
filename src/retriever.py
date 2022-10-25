@@ -6,8 +6,7 @@ import numpy as np
 from glob import glob
 import os
 from src.frame_mapping import FrameMapping
-
-
+from tqdm import tqdm
 # Fix hard code in rsplit
 
 class Retriever:
@@ -95,7 +94,7 @@ class Retriever:
         all_video = self.get_all_list_video()
         all_keyframes = self.get_all_list_keyframe()
 
-        for v in all_video:
+        for v in tqdm(all_video):
             # clip_path = '/mnt/g/CLIPFeatures_C00_V00/{}.npy'.format(v)
             clip_path = os.path.join(features_dir,  v + '.npy')
 
