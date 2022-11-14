@@ -55,18 +55,18 @@ def main(args):
     # retriever.load_clip_embedding()
 
 
-    # # model
+    # model
 
-    # encoder = VIT()
+    encoder = VIT()
 
-    # # query
+    # query
 
-    # text_search = args.text_query
-    # text_search_features = encoder.encode_text(text_search)
+    text_search = args.text_query
+    text_search_features = encoder.encode_text(text_search)
 
-    # retriever.add_text_query_similarity(text_search_features)
+    retriever.add_text_query_similarity(text_search_features)
 
-    # retriever.export(args.top_k, args.export_dir)
+    retriever.export(args.top_k, args.export_dir)
 
 
 
