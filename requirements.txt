@@ -1,2 +1,0 @@
-sentence-transformers
-tensorflow_hub
